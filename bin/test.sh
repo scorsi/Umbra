@@ -11,36 +11,31 @@ command -v elixir >/dev/null 2>&1 || {
 echo "Done!"
 
 echo "----------------------------------------------------------"
-echo "Installing Mix dependencies..."
-echo "----------------------------------------------------------"
-mix deps.get || { echo "Mix dependencies could not be installed!"; exit 1; }
-
-echo "----------------------------------------------------------"
 echo "Running Tests..."
 echo "----------------------------------------------------------"
 
 MIX_ENV="dev" mix compile --warnings-as-errors --force || { echo 'Please fix all compiler warnings.'; exit 1; }
-MIX_ENV="test" mix credo --strict || { echo 'Elixir code failed Credo linting. See warnings above.'; exit 1; }
-MIX_ENV="test" mix docs || { echo 'Elixir HTML docs were not generated!'; exit 1; }
-MIX_ENV="test" mix test || { echo 'Elixir tests failed!'; exit 1; }
+MIX_ENV="test" mix credo --strict || { echo 'Credo linting failed. See warnings above.'; exit 1; }
+MIX_ENV="test" mix docs || { echo 'Docs were not generated!'; exit 1; }
+MIX_ENV="test" mix test || { echo 'Test failed!'; exit 1; }
 
 if [ "$CI" ]; then
   if [ "$TRAVIS" ]; then
     echo "----------------------------------------------------------"
     echo "Running coveralls.travis..."
     echo "----------------------------------------------------------"
-    MIX_ENV="test" mix coveralls.travis || { echo 'Elixir coverage failed!'; exit 1; }
+    MIX_ENV="test" mix coveralls.travis || { echo 'Coverage failed!'; exit 1; }
     echo "Done!"
     echo "----------------------------------------------------------"
     echo "Running inch.report..."
     echo "----------------------------------------------------------"
-    MIX_ENV="test" mix inch.report || { echo 'Elixir coverage failed!'; exit 1; }
+    MIX_ENV="docs" mix inch.report || { echo 'Inch report failed!'; exit 1; }
     echo "Done!"
   else
     echo "----------------------------------------------------------"
     echo "Running coveralls..."
     echo "----------------------------------------------------------"
-    MIX_ENV="test" mix coveralls || { echo 'Elixir coverage failed!'; exit 1; }
+    MIX_ENV="test" mix coveralls || { echo 'Coverage failed!'; exit 1; }
     echo "Done!"
   fi
 fi
