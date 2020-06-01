@@ -11,13 +11,6 @@ command -v elixir >/dev/null 2>&1 || {
 echo "Done!"
 
 echo "----------------------------------------------------------"
-echo "Ensuring Hex is installed..."
-echo "----------------------------------------------------------"
-mix local.hex --force
-mix local.rebar --force
-echo "Done!"
-
-echo "----------------------------------------------------------"
 echo "Installing Mix dependencies..."
 echo "----------------------------------------------------------"
 mix deps.get || { echo "Mix dependencies could not be installed!"; exit 1; }
@@ -36,12 +29,18 @@ if [ "$CI" ]; then
     echo "----------------------------------------------------------"
     echo "Running coveralls.travis..."
     echo "----------------------------------------------------------"
-    MIX_ENV="test" mix coveralls.travis || { echo 'Elixir coverage on Umbra failed!'; exit 1; }
+    MIX_ENV="test" mix coveralls.travis || { echo 'Elixir coverage failed!'; exit 1; }
+    echo "Done!"
+    echo "----------------------------------------------------------"
+    echo "Running inch.report..."
+    echo "----------------------------------------------------------"
+    MIX_ENV="test" mix inch.report || { echo 'Elixir coverage failed!'; exit 1; }
+    echo "Done!"
   else
     echo "----------------------------------------------------------"
     echo "Running coveralls..."
     echo "----------------------------------------------------------"
-    MIX_ENV="test"mix coveralls || { echo 'Elixir coverage on Umbra failed!'; exit 1; }
+    MIX_ENV="test" mix coveralls || { echo 'Elixir coverage failed!'; exit 1; }
+    echo "Done!"
   fi
 fi
-echo "Done!"
