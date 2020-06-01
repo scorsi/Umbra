@@ -36,12 +36,12 @@ if [ "$CI" ]; then
     echo "----------------------------------------------------------"
     echo "Running coveralls.travis..."
     echo "----------------------------------------------------------"
-    mix coveralls.travis || { echo 'Elixir coverage on Umbra failed!'; exit 1; }
+    MIX_ENV="test" mix coveralls.travis || { echo 'Elixir coverage on Umbra failed!'; exit 1; }
   else
     echo "----------------------------------------------------------"
     echo "Running coveralls..."
     echo "----------------------------------------------------------"
-    mix coveralls || { echo 'Elixir coverage on Umbra failed!'; exit 1; }
+    MIX_ENV="test"mix coveralls || { echo 'Elixir coverage on Umbra failed!'; exit 1; }
   fi
 fi
 echo "Done!"
